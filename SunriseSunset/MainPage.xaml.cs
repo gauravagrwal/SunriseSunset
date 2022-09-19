@@ -1,24 +1,47 @@
-﻿namespace SunriseSunset;
+﻿using SunriseSunset.Core.Services;
+
+namespace SunriseSunset;
 
 public partial class MainPage : ContentPage
 {
-	int count = 0;
+    GeoService GeoService { get; set; }
+    SunriseSunsetAPIService SunriseSunsetAPIService { get; set; }
 
-	public MainPage()
-	{
-		InitializeComponent();
-	}
+    public MainPage()
+    {
+        InitializeComponent();
 
-	private void OnCounterClicked(object sender, EventArgs e)
-	{
-		count++;
+        GeoService = new GeoService();
+        SunriseSunsetAPIService = new SunriseSunsetAPIService();
+    }
 
-		if (count == 1)
-			CounterBtn.Text = $"Clicked {count} time";
-		else
-			CounterBtn.Text = $"Clicked {count} times";
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
 
-		SemanticScreenReader.Announce(CounterBtn.Text);
-	}
+        refreshView.IsRefreshing = true;
+        var sunriseSunsetData = await GetSunriseSunsetData();
+        InitializeUI(sunriseSunsetData.Item1, sunriseSunsetData.Item2, sunriseSunsetData.Item3);
+        refreshView.IsRefreshing = false;
+    }
+
+    async Task<(DateTime, DateTime, TimeSpan)> GetSunriseSunsetData()
+    {
+
+        var (Latitude, Longitude) = await GeoService.GetCoordinates();
+        var data = await SunriseSunsetAPIService.GetSunriseSunsetTimes(Latitude, Longitude);
+
+        var sunriseTime = data.Sunrise.ToLocalTime();
+        var sunsetTime = data.Sunset.ToLocalTime();
+        var dayLength = data.DayLength;
+
+        return (sunriseTime, sunsetTime, dayLength);
+    }
+
+    void InitializeUI(DateTime riseTime, DateTime setTime, TimeSpan span)
+    {
+        sunriseLabel.Text = riseTime.ToString("h:mm tt");
+        daylightLabel.Text = $"{span.Hours} hours, {span.Minutes} minutes";
+        sunsetLabel.Text = setTime.ToString("h:mm tt");
+    }
 }
-
