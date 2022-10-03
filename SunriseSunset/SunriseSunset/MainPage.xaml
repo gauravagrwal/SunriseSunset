@@ -1,24 +1,69 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SunriseSunset.MainPage">
+<ContentPage
+    x:Class="SunriseSunset.MainPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-    <StackLayout>
-        <Frame BackgroundColor="#2196F3" Padding="24" CornerRadius="0">
-            <Label Text="Welcome to Xamarin.Forms!" HorizontalTextAlignment="Center" TextColor="White" FontSize="36"/>
-        </Frame>
-        <Label Text="Start developing now" FontSize="Title" Padding="30,10,30,10"/>
-        <Label Text="Make changes to your XAML file and save to see your UI update in the running app with XAML Hot Reload. Give it a try!" FontSize="16" Padding="30,0,30,0"/>
-        <Label FontSize="16" Padding="30,24,30,0">
-            <Label.FormattedText>
-                <FormattedString>
-                    <FormattedString.Spans>
-                        <Span Text="Learn more at "/>
-                        <Span Text="https://aka.ms/xamarin-quickstart" FontAttributes="Bold"/>
-                    </FormattedString.Spans>
-                </FormattedString>
-            </Label.FormattedText>
-        </Label>
-    </StackLayout>
+    <NavigationPage.TitleView>
+        <Label
+            FontAttributes="Bold"
+            FontSize="Title"
+            HorizontalTextAlignment="Center"
+            Text="{Binding Source={x:Static sys:DateTime.Today}, StringFormat='{0:MMMM d, yyyy}'}"
+            TextColor="White"
+            VerticalTextAlignment="Center" />
+    </NavigationPage.TitleView>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Grid">
+                <Setter Property="Padding" Value="30,0,0,0" />
+            </Style>
+            <Style TargetType="StackLayout">
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+            </Style>
+            <Style TargetType="Label">
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <RefreshView x:Name="refreshView">
+            <Grid ColumnDefinitions="Auto, *" RowDefinitions="*, *, *">
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    FontSize="75"
+                    Text="🌅" />
+                <StackLayout Grid.Row="0" Grid.Column="1">
+                    <Label x:Name="sunriseLabel" FontAttributes="None" />
+                    <Label FontSize="Body" Text="Sunrise" />
+                </StackLayout>
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    FontSize="75"
+                    Text="☀️" />
+                <StackLayout Grid.Row="1" Grid.Column="1">
+                    <Label x:Name="daylightLabel" FontAttributes="None" />
+                    <Label FontSize="Body" Text="Daylight" />
+                </StackLayout>
+                <Label
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    FontSize="75"
+                    Text="🌇" />
+                <StackLayout Grid.Row="2" Grid.Column="1">
+                    <Label x:Name="sunsetLabel" FontAttributes="None" />
+                    <Label FontSize="Body" Text="Sunset" />
+                </StackLayout>
+            </Grid>
+        </RefreshView>
+    </ContentPage.Content>
 
 </ContentPage>
